@@ -1,0 +1,123 @@
+local ui = loadstring(game:HttpGet("https://raw.githubusercontent.com/Daffy734/code/refs/heads/main/yep"))()
+
+local win = ui:Create({
+    Name = "Jump Showdown (Daffy)",
+    ThemeColor = Color3.fromRGB(42, 195, 209),
+    StartupSound = "rbxassetid://6958727243",
+    ThemeFont = Enum.Font.GothamBold,
+	ToggledSideBar = true
+})
+
+local maintab = win:Tab("Main")
+local teleporttab = win:Tab("Teleports")
+
+local plr = game.Players.LocalPlayer
+local virtualInputManager = game:GetService("VirtualInputManager")
+
+local qteOn = false
+maintab:Toggle("Auto Quick Time Event ⚪", function()
+    qteOn = not qteOn
+end)
+
+local conversions = {
+	["E"] = Enum.KeyCode.E,
+	["Q"] = Enum.KeyCode.Q,
+	["T"] = Enum.KeyCode.T,
+	["R"] = Enum.KeyCode.R,
+	["G"] = Enum.KeyCode.G,
+	["V"] = Enum.KeyCode.V,
+	["Y"] = Enum.KeyCode.Y,
+}
+
+plr.PlayerGui.QuicktimeUI.ChildAdded:Connect(function(prompt)
+	if prompt.Name ~= "PromptHolder" then
+		return
+	end
+
+	if qteOn then
+		prompt:WaitForChild("Indicator")
+		task.wait(0.15)
+		local try
+		try = game["Run Service"].RenderStepped:Connect(function()
+			if prompt and prompt:FindFirstChild("Indicator") then
+				if prompt.Indicator.Size.X.Scale <= 1.43 then
+					print("Clicked " .. prompt.BG.Key.Text .. "    Size " .. prompt.Indicator.Size.X.Scale)
+					local key = conversions[prompt.BG.Key.Text]
+					virtualInputManager:SendKeyEvent(true, key, false, plr) -- key down
+					task.delay(0.05, function()
+						virtualInputManager:SendKeyEvent(false, key, false, plr) -- key up
+					end)
+					try:Disconnect()
+				end
+			else
+				return
+			end
+		end)
+		task.delay(2, function()
+			try:Disconnect()
+		end)
+	end
+end)
+
+local wallAnywhere = false
+maintab:Toggle("Wall Combo Anywhere 🧱", function()
+    wallAnywhere = not wallAnywhere
+end)
+
+local wall = workspace.Map.Model.Props.Fences:GetChildren()[26].Barrier
+wall.CanCollide = true
+wall.Size = Vector3.new(3, 3, 1)
+
+game.UserInputService.InputBegan:Connect(function(key, bg)
+	if bg or wallAnywhere == false then return end
+
+	if key.KeyCode == Enum.KeyCode.Q then
+		wall.CFrame = plr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -6)
+		task.wait()
+		wall.CFrame = plr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 100, -6)
+	end
+end)
+
+local optimized = false
+maintab:Button("Optimize Game ✨ (WIP)", function()
+    if optimized == false then
+		optimized = true
+		
+		game.Lighting.GlobalShadows = false
+		for _, v in pairs(workspace.Map.Model.BorderTerrain:GetDescendants()) do
+			if v.Name == "Grass" then
+				v:Destroy()
+			end
+		end
+	end
+end)
+
+teleporttab:Button("Battleground 👊", function()
+    local root = plr.Character.HumanoidRootPart
+	root.CFrame = CFrame.new(246, 5, 361)
+end)
+teleporttab:Button("Market Dealer 👤", function()
+    local root = plr.Character.HumanoidRootPart
+	root.CFrame = CFrame.new(300, 9, -660)
+end)
+teleporttab:Button("Crate 📦", function()
+	local crate = workspace.Visuals:FindFirstChild("Crate")
+	if crate and crate:FindFirstChild("PickupSound") then
+		local root = plr.Character.HumanoidRootPart
+		root.CFrame = CFrame.new(crate.Position)
+	else
+		game.StarterGui:SetCore("SendNotification", {
+        Title = "Crate",
+        Text = "The crate does not exist :(",
+        Duration = 1
+    	})
+	end
+end)
+teleporttab:Button("Lake 🌊", function()
+    local root = plr.Character.HumanoidRootPart
+	root.CFrame = CFrame.new(227, 4, -349)
+end)
+teleporttab:Button("Arcade 🎮", function()
+    local root = plr.Character.HumanoidRootPart
+	root.CFrame = CFrame.new(1071, 5, -22)
+end)
