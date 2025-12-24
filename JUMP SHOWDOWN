@@ -13,6 +13,8 @@ local teleporttab = win:Tab("Teleports")
 
 local plr = game.Players.LocalPlayer
 local virtualInputManager = game:GetService("VirtualInputManager")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local qteOn = false
 maintab:Toggle("Auto Quick Time Event ⚪", function()
@@ -28,6 +30,20 @@ local conversions = {
 	["V"] = Enum.KeyCode.V,
 	["Y"] = Enum.KeyCode.Y,
 }
+
+local function isRagdolled(char)
+	if not char then return false end
+	local comp = char:FindFirstChild("RagdollComponents")
+	if not comp then return false end
+	local total, active = 0, 0
+	for _, child in pairs(comp:GetChildren()) do
+		if child:IsA("BallSocketConstraint") then
+			total = total + 1
+			if child.Enabled then active = active + 1 end
+		end
+	end
+	return total > 0 and (active / total) > 0.5
+end
 
 plr.PlayerGui.QuicktimeUI.ChildAdded:Connect(function(prompt)
 	if prompt.Name ~= "PromptHolder" then
@@ -68,6 +84,12 @@ local wall = workspace.Map.Model.Props.Fences:GetChildren()[26].Barrier
 wall.CanCollide = true
 wall.Size = Vector3.new(3, 3, 1)
 
+game:GetService("Players").LocalPlayer.PlayerGui.Mobile.DragFrame.Dash.Button.MouseButton1Up:Connect(function()
+	wall.CFrame = plr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -6)
+	task.wait()
+	wall.CFrame = plr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 100, -6)
+end)
+
 game.UserInputService.InputBegan:Connect(function(key, bg)
 	if bg or wallAnywhere == false then return end
 
@@ -78,8 +100,23 @@ game.UserInputService.InputBegan:Connect(function(key, bg)
 	end
 end)
 
+local standingBehind = ""
+maintab:Textbox("Stand Behind 🧍‍♂️", function(v)
+    standingBehind = v
+end)
+
+game["Run Service"].RenderStepped:Connect(function()
+	if standingBehind ~= "" then
+		local found = game.Players:FindFirstChild(standingBehind)
+		local root = plr.Character.HumanoidRootPart
+		if found then
+			root.CFrame = found.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
+		end
+	end
+end)
+
 local optimized = false
-maintab:Button("Optimize Game ✨ (WIP)", function()
+maintab:Button("Optimize Game ✨ (kinda ahh) ", function()
     if optimized == false then
 		optimized = true
 		
@@ -108,7 +145,7 @@ teleporttab:Button("Crate 📦", function()
 	else
 		game.StarterGui:SetCore("SendNotification", {
         Title = "Crate",
-        Text = "The crate does not exist :(",
+        Text = "There is no crate right now :(",
         Duration = 1
     	})
 	end
