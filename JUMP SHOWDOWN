@@ -16,6 +16,59 @@ local virtualInputManager = game:GetService("VirtualInputManager")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local function BodyVelocity(part, speed, duration, startAtZero, easingInfo, delayTween, delayStart, useCustomTween)
+ 
+	for _, v in pairs(part:GetChildren()) do
+		if v:IsA("BodyVelocity") then
+			v:Destroy()
+		end
+	end
+ 
+	local directionProperty = delayTween or "LookVector"
+ 
+	local bv = Instance.new("BodyVelocity")
+	bv.MaxForce = Vector3.new(350000, 0, 350000)
+	bv.Parent = part
+ 
+	task.delay(duration, bv.Destroy, bv)
+ 
+	local valueHolder = Instance.new("NumberValue")
+	valueHolder.Value = startAtZero and 0 or speed
+	valueHolder.Parent = bv
+ 
+	if not useCustomTween then
+		-- Default tween
+		local tweenInfo = easingInfo or TweenInfo.new(duration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+		local goal = { Value = startAtZero and 0 or speed }
+		game.TweenService:Create(valueHolder, tweenInfo, goal):Play()
+	else
+		task.delay(useCustomTween, function()
+			local easingStyle = easingInfo or Enum.EasingStyle.Linear
+			local goal = { Value = startAtZero and 0 or speed }
+			local tweenInfo = TweenInfo.new(duration, easingStyle, Enum.EasingDirection.Out)
+			game.TweenService:Create(valueHolder, tweenInfo, goal):Play()
+		end)
+	end
+ 
+	if not delayStart then
+		bv.Velocity = part.CFrame[directionProperty] * speed
+ 
+		local connection
+		connection = game["Run Service"].RenderStepped:Connect(function()
+			if not bv:IsDescendantOf(game) then
+				connection:Disconnect()
+				return
+			end
+ 
+			bv.Velocity = part.CFrame[directionProperty] * valueHolder.Value
+ 
+			local direction = part.CFrame[directionProperty]
+		end)
+	end
+ 
+	return bv, valueHolder
+end
+
 local qteOn = false
 maintab:Toggle("Auto Quick Time Event ⚪", function()
     qteOn = not qteOn
@@ -128,6 +181,24 @@ maintab:Button("Optimize Game ✨ (kinda ahh) ", function()
 		end
 	end
 end)
+
+local novelocitys = false
+maintab:Toggle("No Velocitys/Stun 💨", function(v)
+    novelocitys = not novelocitys
+	if novelocitys == false then
+		plr.Character.Humanoid.WalkSpeed = 16
+	end
+end)
+
+game["Run Service"].RenderStepped:Connect(function()
+	if novelocitys then
+		plr.Character.Humanoid.WalkSpeed = 28
+		if plr.Character.HumanoidRootPart:FindFirstChildWhichIsA("BodyVelocity") then
+			plr.Character.HumanoidRootPart:FindFirstChildWhichIsA("BodyVelocity"):Destroy()
+		end
+	end
+end)
+
 
 teleporttab:Button("Battleground 👊", function()
     local root = plr.Character.HumanoidRootPart
