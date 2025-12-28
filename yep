@@ -741,23 +741,22 @@ function Library:Create(config)
 			slider.Text = ""
 			slider.AutoButtonColor = false
 			slider.Parent = holder
-
 			Instance.new("UICorner", slider).CornerRadius = UDim.new(0, 6)
 
-			-- Title text
+			-- Title
 			local title = Instance.new("TextLabel")
 			title.Font = config.ThemeFont
 			title.Text = text
 			title.TextSize = 13
-			title.TextColor3 = Color3.new(1, 1, 1)
-			title.TextStrokeColor3 = Color3.fromRGB(195, 195, 195)
+			title.TextColor3 = Color3.new(1,1,1)
+			title.TextStrokeColor3 = Color3.fromRGB(195,195,195)
 			title.TextXAlignment = Enum.TextXAlignment.Left
 			title.BackgroundTransparency = 1
 			title.Position = UDim2.fromScale(0.02, 0)
 			title.Size = UDim2.fromScale(0.5, 1)
 			title.Parent = slider
 
-			-- Bar background
+			-- Bar
 			local bar = Instance.new("Frame")
 			bar.BackgroundColor3 = darkerColor
 			bar.Position = UDim2.fromScale(0.75, 0.5)
@@ -766,19 +765,19 @@ function Library:Create(config)
 			bar.Parent = slider
 			Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 3)
 
-			-- Fill bar
+			-- Fill
 			local fill = Instance.new("Frame")
 			fill.BackgroundColor3 = config.ThemeColor
 			fill.Size = UDim2.fromScale((default - min) / (max - min), 1)
 			fill.Parent = bar
 			Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 3)
 
-			-- Value text
+			-- Value
 			local valueLabel = Instance.new("TextLabel")
 			valueLabel.Font = config.ThemeFont
 			valueLabel.TextSize = 13
-			valueLabel.TextColor3 = Color3.new(1, 1, 1)
-			valueLabel.TextStrokeColor3 = Color3.fromRGB(195, 195, 195)
+			valueLabel.TextColor3 = Color3.new(1,1,1)
+			valueLabel.TextStrokeColor3 = Color3.fromRGB(195,195,195)
 			valueLabel.BackgroundTransparency = 1
 			valueLabel.Position = UDim2.fromScale(0.65, 0)
 			valueLabel.Size = UDim2.fromOffset(44, 32)
@@ -787,6 +786,7 @@ function Library:Create(config)
 
 			-- State
 			local dragging = false
+			local activeInput = nil
 			local currentValue = default
 
 			-- Helper
@@ -804,14 +804,12 @@ function Library:Create(config)
 					callback(value)
 				end
 
-				TweenService:Create(
-					fill,
-					TweenInfo.new(0.06),
-					{ Size = UDim2.fromScale(percent, 1) }
-				):Play()
+				TweenService:Create(fill, TweenInfo.new(0.06), {
+					Size = UDim2.fromScale(percent, 1)
+				}):Play()
 			end
 
-			-- Hover effects
+			-- Hover (PC only, harmless on mobile)
 			slider.MouseEnter:Connect(function()
 				TweenService:Create(slider, TweenInfo.new(0.25), {
 					BackgroundColor3 = PitchHoverColor
@@ -826,24 +824,32 @@ function Library:Create(config)
 				end
 			end)
 
-			-- Drag handling
-			slider.MouseButton1Down:Connect(function()
-				dragging = true
-				setValueFromX(UIS:GetMouseLocation().X)
-			end)
-
-			UIS.InputEnded:Connect(function(input)
-				if input.UserInputType == Enum.UserInputType.MouseButton1 then
-					dragging = false
-					TweenService:Create(slider, TweenInfo.new(0.25), {
-						BackgroundColor3 = PitchColor
-					}):Play()
+			-- Input begin
+			slider.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1
+					or input.UserInputType == Enum.UserInputType.Touch then
+					dragging = true
+					activeInput = input
+					setValueFromX(input.Position.X)
 				end
 			end)
 
-			RunService.RenderStepped:Connect(function()
-				if dragging then
-					setValueFromX(UIS:GetMouseLocation().X)
+			-- Input move
+			UIS.InputChanged:Connect(function(input)
+				if dragging and input == activeInput then
+					setValueFromX(input.Position.X)
+				end
+			end)
+
+			-- Input end
+			UIS.InputEnded:Connect(function(input)
+				if input == activeInput then
+					dragging = false
+					activeInput = nil
+
+					TweenService:Create(slider, TweenInfo.new(0.25), {
+						BackgroundColor3 = PitchColor
+					}):Play()
 				end
 			end)
 		end
