@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("daffys ui: ver 1.14.1")
+print("daffys ui: ver 1.14.2")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -411,9 +411,9 @@ function Library:Create(config)
 					if hidden == false then
 						hidden = true
 						ogPos = main.Position
-						local b = 1.2
+						local b = 1.4
 						if UserInputService.TouchEnabled then
-							b = 1.5
+							b = 1.7
 						end
 						game.TweenService:Create(main, TweenInfo.new(0.1), {Position = UDim2.new(0.5, 0,b, 0)}):Play()
 					else
