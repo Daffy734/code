@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("daffys ui: ver 1.13.1")
+print("daffys ui: ver 1.14.0")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -518,7 +518,7 @@ function Library:Create(config)
 
 		--// Elements
 		local ElementHandler = {}
-		function ElementHandler:Label(text)
+		function ElementHandler:Label(text, desc)
 			local label = Instance.new("Frame")
 			label.Name = "label"
 			label.BackgroundColor3 = PitchColor
@@ -558,8 +558,12 @@ function Library:Create(config)
 		end)
 
 
-		function ElementHandler:Button(text, callback)
+		function ElementHandler:Button(text, desc, callback)
 			text = text or "Button"
+			if desc ~= string and not callback then
+				callback = desc
+				desc = nil
+			end
 			callback = callback or function() end
 
 			local button = Instance.new("TextButton")
@@ -590,6 +594,24 @@ function Library:Create(config)
 			textLabel5.Position = UDim2.fromScale(0.0181, 0)
 			textLabel5.Size = UDim2.fromOffset(1, 32)
 			textLabel5.Parent = button
+			
+			if desc then
+				local desclabl = Instance.new("TextLabel")
+				desclabl.Name = "desclabl"
+				desclabl.Font = config.ThemeFont
+				desclabl.Text = desc
+				desclabl.TextColor3 = Color3.fromRGB(203, 203, 203)
+				desclabl.TextSize = 10
+				desclabl.TextStrokeColor3 = Color3.fromRGB(195, 195, 195)
+				desclabl.TextXAlignment = Enum.TextXAlignment.Left
+				desclabl.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				desclabl.BackgroundTransparency = 1
+				desclabl.Position = UDim2.fromScale(0.0181, 0.38)
+				desclabl.Size = UDim2.fromOffset(1, 32)
+				desclabl.Parent = button
+				
+				button.Size = UDim2.fromOffset(441, 42)
+			end
 
 			local imageLabel = Instance.new("ImageLabel")
 			imageLabel.Name = "imageLabel"
@@ -957,8 +979,12 @@ function Library:Create(config)
 
 
 
-		function ElementHandler:Toggle(text, callback)
+		function ElementHandler:Toggle(text, desc, callback)
 			text = text or "Toggle"
+			if desc ~= string and not callback then
+				callback = desc
+				desc = nil
+			end
 			callback = callback or function() end
 
 			toggless[text] = false
@@ -990,6 +1016,24 @@ function Library:Create(config)
 			textLabel4.Position = UDim2.fromScale(0.0181, 0)
 			textLabel4.Size = UDim2.fromOffset(1, 32)
 			textLabel4.Parent = toggle1
+			
+			if desc then
+				local desclabl = Instance.new("TextLabel")
+				desclabl.Name = "desclabl"
+				desclabl.Font = config.ThemeFont
+				desclabl.Text = desc
+				desclabl.TextColor3 = Color3.fromRGB(203, 203, 203)
+				desclabl.TextSize = 10
+				desclabl.TextStrokeColor3 = Color3.fromRGB(195, 195, 195)
+				desclabl.TextXAlignment = Enum.TextXAlignment.Left
+				desclabl.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				desclabl.BackgroundTransparency = 1
+				desclabl.Position = UDim2.fromScale(0.0181, 0.38)
+				desclabl.Size = UDim2.fromOffset(1, 32)
+				desclabl.Parent = toggle1
+
+				toggle1.Size = UDim2.fromOffset(441, 42)
+			end
 
 			local frame3 = Instance.new("Frame")
 			frame3.Name = "frame3"
