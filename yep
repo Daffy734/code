@@ -2,7 +2,12 @@
 
 print("daffys ui: ver 1.12.0")
 
-local location = game.Players.LocalPlayer.PlayerGui
+local location
+if game:GetService("RunService"):IsStudio() then
+	location = game.Players.LocalPlayer.PlayerGui
+else
+	location = game.CoreGui
+end
 
 for _,v in pairs(location:GetChildren()) do
 	if v.Name == "dark_UI" then
