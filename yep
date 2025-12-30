@@ -806,18 +806,37 @@ function Library:Create(config)
 			UserInputService.InputBegan:connect(keybindClicked)
 		end
 
-		function ElementHandler:Slider(text, default, min, max, callback)
+		function ElementHandler:Slider(text, default, min, max, increments, callback)
 			text = text or "Slider"
 			min = min or 0
 			max = max or 100
-			default = math.clamp(default or min, min, max)
+			increments = increments or 1
 			callback = callback or function() end
+			
+			local function roundToIncrement(n)
+				return math.round(n / increments) * increments
+			end
+
+			local function getDecimals(step)
+				local s = tostring(step)
+				local dot = string.find(s, "%.")
+				return dot and (#s - dot) or 0
+			end
+
+			local DECIMALS = getDecimals(increments)
+
+			-- Ensure default snaps to the nearest increment immediately
+			local initialValue = math.clamp(default or min, min, max)
+			initialValue = roundToIncrement(initialValue)
+			initialValue = math.clamp(initialValue, min, max)
+
+
 
 			local TweenService = game:GetService("TweenService")
 			local UIS = game:GetService("UserInputService")
 			local RunService = game:GetService("RunService")
 
-			-- Slider button
+			-- Slider button (Container)
 			local slider = Instance.new("TextButton")
 			slider.Name = "Slider"
 			slider.BackgroundColor3 = PitchColor
@@ -827,22 +846,19 @@ function Library:Create(config)
 			slider.Parent = holder
 			Instance.new("UICorner", slider).CornerRadius = UDim.new(0, 6)
 
-			bubbleClick(slider)
-
 			-- Title
 			local title = Instance.new("TextLabel")
 			title.Font = config.ThemeFont
 			title.Text = text
 			title.TextSize = 13
 			title.TextColor3 = Color3.new(1,1,1)
-			title.TextStrokeColor3 = Color3.fromRGB(195,195,195)
 			title.TextXAlignment = Enum.TextXAlignment.Left
 			title.BackgroundTransparency = 1
 			title.Position = UDim2.fromScale(0.02, 0)
 			title.Size = UDim2.fromScale(0.5, 1)
 			title.Parent = slider
 
-			-- Bar
+			-- Bar (Background)
 			local bar = Instance.new("Frame")
 			bar.BackgroundColor3 = darkerColor
 			bar.Position = UDim2.fromScale(0.75, 0.5)
@@ -851,101 +867,75 @@ function Library:Create(config)
 			bar.Parent = slider
 			Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 3)
 
-			-- Fill
+			-- Fill (Progress)
 			local fill = Instance.new("Frame")
 			fill.BackgroundColor3 = config.ThemeColor
-			fill.Size = UDim2.fromScale((default - min) / (max - min), 1)
+			-- Calculate initial visual width based on snapped default
+			local initialPercent = (initialValue - min) / (max - min)
+			fill.Size = UDim2.fromScale(initialPercent, 1)
 			fill.Parent = bar
 			Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 3)
 
-			-- Value
+			-- Value Label
 			local valueLabel = Instance.new("TextLabel")
 			valueLabel.Font = config.ThemeFont
 			valueLabel.TextSize = 13
 			valueLabel.TextColor3 = Color3.new(1,1,1)
-			valueLabel.TextStrokeColor3 = Color3.fromRGB(195,195,195)
 			valueLabel.BackgroundTransparency = 1
 			valueLabel.Position = UDim2.fromScale(0.65, 0)
 			valueLabel.Size = UDim2.fromOffset(44, 32)
-			valueLabel.Text = tostring(default)
+			valueLabel.Text = tostring(initialValue)
 			valueLabel.Parent = slider
 
-			-- State
 			local dragging = false
-			local currentValue = default
+			local currentValue = initialValue
 
-			-- Helper
+			-- The "Increment" Logic
 			local function setValueFromX(x)
-				local percent = math.clamp(
-					(x - bar.AbsolutePosition.X) / bar.AbsoluteSize.X,
-					0, 1
-				)
-				local value = math.floor(min + (max - min) * percent)
-				if value ~= currentValue then
-					currentValue = value
-					valueLabel.Text = value
-					callback(value)
+				local rawPercent = math.clamp((x - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
+				local rawValue = min + (max - min) * rawPercent
+
+				-- Snap to nearest increment
+				local snappedValue = roundToIncrement(rawValue)
+				snappedValue = math.clamp(snappedValue, min, max)
+
+
+
+				-- Update UI and Callback only if value changed
+				if snappedValue ~= currentValue then
+					currentValue = snappedValue
+					valueLabel.Text = string.format("%." .. DECIMALS .. "f", currentValue)
+					callback(currentValue)
 				end
-				TweenService:Create(fill, TweenInfo.new(0.06), {
-					Size = UDim2.fromScale(percent, 1)
+
+				-- Smoothly move the bar to the snapped position
+				local snappedPercent = (snappedValue - min) / (max - min)
+				TweenService:Create(fill, TweenInfo.new(0.06, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+					Size = UDim2.fromScale(snappedPercent, 1)
 				}):Play()
 			end
 
-			-- Hover (PC only)
-			slider.MouseEnter:Connect(function()
-				TweenService:Create(slider, TweenInfo.new(0.25), {
-					BackgroundColor3 = PitchHoverColor
-				}):Play()
-			end)
-			slider.MouseLeave:Connect(function()
-				if not dragging then
-					TweenService:Create(slider, TweenInfo.new(0.25), {
-						BackgroundColor3 = PitchColor
-					}):Play()
-				end
-			end)
-
-			-- Input begin
-			local function beginDrag(input)
-				if input.UserInputType == Enum.UserInputType.MouseButton1
-					or input.UserInputType == Enum.UserInputType.Touch then
+			-- Input Handling
+			slider.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 					dragging = true
 					setValueFromX(input.Position.X)
 				end
-			end
-			slider.InputBegan:Connect(beginDrag)
+			end)
 
-			-- Continuous update while holding
 			RunService.RenderStepped:Connect(function()
 				if dragging then
-					local mousePos
-					if UIS.TouchEnabled and UIS.TouchEnabled == true then
-						-- For mobile, track first touch on slider
-						local touches = UIS:GetTouches()
-						if #touches > 0 then
-							mousePos = touches[1].Position
-						end
-					else
-						mousePos = UIS:GetMouseLocation()
-					end
-					if mousePos then
-						setValueFromX(mousePos.X)
-					end
+					local mousePos = UIS:GetMouseLocation()
+					-- Adjusting for GUI inset (top bar) if necessary
+					setValueFromX(mousePos.X)
 				end
 			end)
 
-			-- Input end
-			local function endDrag(input)
-				if input.UserInputType == Enum.UserInputType.MouseButton1
-					or input.UserInputType == Enum.UserInputType.Touch then
+			UIS.InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 					dragging = false
-					TweenService:Create(slider, TweenInfo.new(0.25), {
-						BackgroundColor3 = PitchColor
-					}):Play()
 				end
-			end
-			slider.InputEnded:Connect(endDrag)
-			UIS.InputEnded:Connect(endDrag)
+			end)
 		end
 
 
