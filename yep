@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("daffys ui: ver 1.13.0")
+print("daffys ui: ver 1.13.1")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -877,7 +877,7 @@ function Library:Create(config)
 			Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 3)
 
 			-- Value Label
-			local valueLabel = Instance.new("TextLabel")
+			local valueLabel = Instance.new("TextBox")
 			valueLabel.Font = config.ThemeFont
 			valueLabel.TextSize = 13
 			valueLabel.TextColor3 = Color3.new(1,1,1)
@@ -890,37 +890,61 @@ function Library:Create(config)
 			local dragging = false
 			local currentValue = initialValue
 
-			-- The "Increment" Logic
 			local function setValueFromX(x)
 				local rawPercent = math.clamp((x - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
 				local rawValue = min + (max - min) * rawPercent
 
-				-- Snap to nearest increment
 				local snappedValue = roundToIncrement(rawValue)
 				snappedValue = math.clamp(snappedValue, min, max)
 
 
-
-				-- Update UI and Callback only if value changed
 				if snappedValue ~= currentValue then
 					currentValue = snappedValue
 					valueLabel.Text = string.format("%." .. DECIMALS .. "f", currentValue)
 					callback(currentValue)
 				end
 
-				-- Smoothly move the bar to the snapped position
 				local snappedPercent = (snappedValue - min) / (max - min)
 				TweenService:Create(fill, TweenInfo.new(0.06, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 					Size = UDim2.fromScale(snappedPercent, 1)
 				}):Play()
 			end
+			
+			local function setValueFromNumber(n)
+				if not n then
+					valueLabel.Text = string.format("%." .. DECIMALS .. "f", currentValue)
+					return
+				end
+
+				local snappedValue = roundToIncrement(n)
+				snappedValue = math.clamp(snappedValue, min, max)
+
+				if snappedValue ~= currentValue then
+					currentValue = snappedValue
+					callback(currentValue)
+				end
+
+				valueLabel.Text = string.format("%." .. DECIMALS .. "f", currentValue)
+
+				local snappedPercent = (currentValue - min) / (max - min)
+				TweenService:Create(fill, TweenInfo.new(0.06, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+					Size = UDim2.fromScale(snappedPercent, 1)
+				}):Play()
+			end
+
 
 			-- Input Handling
 			slider.InputBegan:Connect(function(input)
+				if valueLabel:IsFocused() then return end
+				
 				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 					dragging = true
 					setValueFromX(input.Position.X)
 				end
+			end)
+
+			valueLabel.FocusLost:Connect(function()
+				setValueFromNumber(tonumber(valueLabel.Text))
 			end)
 
 			RunService.RenderStepped:Connect(function()
