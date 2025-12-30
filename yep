@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("daffys ui: ver 1.12.0")
+print("daffys ui: ver 1.13.0")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -324,6 +324,16 @@ function Library:Create(config)
 		game.Debris:AddItem(sfx, 1)
 		dark_UI:Destroy()
 	end
+	
+	local function getCurrentTabInt()
+		local currentTab = 0
+		for i, v in pairs(main:GetChildren()) do
+			if v.Name == "container" then
+				currentTab += 1
+			end
+		end
+		return currentTab
+	end
 
 	local function hoverClickSFXs(button)
 		button.MouseButton1Click:Connect(function()
@@ -345,13 +355,11 @@ function Library:Create(config)
 	end
 
 	local function bubbleClick(button: TextButton)
-		button.ClipsDescendants = true -- This keeps the circle inside the button
+		button.ClipsDescendants = true
 
 		button.MouseButton1Click:Connect(function()
 			local mousePos = UserInputService:GetMouseLocation()
-
-			-- GUI objects are offset by the top bar (36px). 
-			-- We subtract the button's position from the mouse position to get the local spot.
+			
 			local relativeX = mousePos.X - button.AbsolutePosition.X
 			local relativeY = (mousePos.Y - 55) - button.AbsolutePosition.Y 
 
@@ -361,22 +369,20 @@ function Library:Create(config)
 			bubble.BorderSizePixel = 0
 			bubble.AnchorPoint = Vector2.new(0.5, 0.5)
 
-			-- STARTING STATE: Size is 0
 			bubble.Position = UDim2.fromOffset(relativeX, relativeY)
 			bubble.Size = UDim2.fromOffset(0, 0)
 			bubble.Parent = button
 
 			local corna = Instance.new("UICorner")
-			corna.CornerRadius = UDim.new(1, 0) -- Keeps it a perfect circle
+			corna.CornerRadius = UDim.new(1, 0)
 			corna.Parent = bubble
 
-			-- Determine how big it needs to grow to cover the whole button
 			local endSize = math.max(button.AbsoluteSize.X, button.AbsoluteSize.Y) * 0.5
 
 			local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 			local tween = TweenService:Create(bubble, tweenInfo, {
 				Size = UDim2.fromOffset(endSize, endSize),
-				BackgroundTransparency = 1 -- Fades out as it gets big
+				BackgroundTransparency = 1
 			})
 
 			tween:Play()
@@ -433,10 +439,16 @@ function Library:Create(config)
 		holda.Position = UDim2.fromScale(0.0342, 0.31)
 		holda.Size = UDim2.fromOffset(454, 183)
 		
+
 		local container = Instance.new("Frame")
 		container.Name = "containerr"
 		container.BackgroundColor3 = darkerColor
 		container.Size = UDim2.new(1, 0, 1, 0)
+		
+		local currentInt = getCurrentTabInt()
+		holda:SetAttribute("ContainerInt", currentInt)
+		
+		container.Position = UDim2.new(currentInt, 0, 0, 0)
 
 		local uICorner2 = Instance.new("UICorner")
 		uICorner2.Name = "uICorner2"
@@ -476,35 +488,19 @@ function Library:Create(config)
 
 		holder.Parent = container
 		container.Parent = holda
-		holda.Visible = false
+		holda.Visible = true
 		holda.Parent = main
 
 		--// Event
 		hoverClickSFXs(main1)
 		main1.MouseButton1Click:Connect(function()
-			for _,v in pairs(location:FindFirstChild('dark_UI').main:GetChildren()) do
-				if v.Name == "container" and v ~= holda and v.Visible == true then
-					v.ZIndex = 2
+			for _,v:Frame in pairs(location:FindFirstChild('dark_UI').main:GetChildren()) do
+				if v.Name == "container" then
+					local cont = v.containerr
 					
-					local x = 0
-					local y = 0
+					local po = v:GetAttribute("ContainerInt") - currentInt
 					
-					if math.random(1, 2) == 1 then
-						x = -1
-					else
-						x = 1
-					end
-					
-					if math.random(1, 2) == 1 then
-						y = -1
-					else
-						y = 1
-					end
-					
-					TweenService:Create(v.containerr, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(x, 0, y, 0)}):Play()
-					task.delay(0.15, function()
-						v.Visible = false
-					end)
+					TweenService:Create(cont, TweenInfo.new(0.2), {Position = UDim2.new(po, 0, 0, 0)}):Play()
 				end
 			end
 
@@ -514,9 +510,9 @@ function Library:Create(config)
 					game:GetService('TweenService'):Create(v, TweenInfo.new(0.15), {TextTransparency = 0.5}):Play()
 				end
 			end
+			
 			holda.Visible = true
 			holda.ZIndex = 1
-			container.Position = UDim2.new(0, 0, 0, 0)
 			game:GetService('TweenService'):Create(main1, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
 		end)
 
@@ -545,7 +541,7 @@ function Library:Create(config)
 			textLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			textLabel.BackgroundTransparency = 1
 			textLabel.Position = UDim2.fromScale(0.0181, 0)
-			textLabel.Size = UDim2.fromOffset(1, 32)
+			textLabel.Size = UDim2.fromScale(0.5, 1)
 			textLabel.Parent = label
 		end
 
@@ -573,7 +569,7 @@ function Library:Create(config)
 			button.Size = UDim2.fromOffset(441, 32)
 			button.Text = ""
 			button.AutoButtonColor = false
-			
+
 			bubbleClick(button)
 
 			local uICorner12 = Instance.new("UICorner")
@@ -633,7 +629,7 @@ function Library:Create(config)
 			button.Size = UDim2.fromOffset(441, 32)
 			button.Text = ""
 			button.AutoButtonColor = false
-			
+
 			bubbleClick(button)
 
 			local uICorner12 = Instance.new("UICorner")
@@ -725,8 +721,8 @@ function Library:Create(config)
 					item.Font = config.ThemeFont
 					item.TextScaled = true
 					item.Parent = drodownFrame
-					
-					
+
+
 					bubbleClick(item)
 
 					hoverClickSFXs(item)
@@ -830,7 +826,7 @@ function Library:Create(config)
 			slider.AutoButtonColor = false
 			slider.Parent = holder
 			Instance.new("UICorner", slider).CornerRadius = UDim.new(0, 6)
-			
+
 			bubbleClick(slider)
 
 			-- Title
@@ -966,7 +962,7 @@ function Library:Create(config)
 			toggle1.Size = UDim2.fromOffset(441, 32)
 			toggle1.Text = ""
 			toggle1.AutoButtonColor = false
-			
+
 			bubbleClick(toggle1)
 
 			local uICorner9 = Instance.new("UICorner")
@@ -1030,102 +1026,6 @@ function Library:Create(config)
 				else
 					game:GetService('TweenService'):Create(frame3, TweenInfo.new(0.2), {BackgroundColor3 = config.ThemeColor}):Play()
 					game:GetService('TweenService'):Create(uIStroke1, TweenInfo.new(0.2), {Color = Color3.fromRGB(76, 76, 76)}):Play()
-				end
-			end)
-		end
-
-		function ElementHandler:LoopToggle(text, interval, callback)
-			text = text or "Toggle"
-			callback = callback or function() end
-
-			local toggle1 = Instance.new("TextButton")
-			toggle1.Name = "toggle1"
-			toggle1.BackgroundColor3 = PitchColor
-			toggle1.Size = UDim2.fromOffset(441, 32)
-			toggle1.Text = ""
-			toggle1.AutoButtonColor = false
-			
-			bubbleClick(toggle1)
-
-			local uICorner9 = Instance.new("UICorner")
-			uICorner9.Name = "uICorner9"
-			uICorner9.CornerRadius = UDim.new(0, 6)
-			uICorner9.Parent = toggle1
-
-			local textLabel4 = Instance.new("TextLabel")
-			textLabel4.Name = "textLabel4"
-			textLabel4.Font = config.ThemeFont
-			textLabel4.Text = text
-			textLabel4.TextColor3 = Color3.fromRGB(255, 255, 255)
-			textLabel4.TextSize = 13
-			textLabel4.TextStrokeColor3 = Color3.fromRGB(195, 195, 195)
-			textLabel4.TextXAlignment = Enum.TextXAlignment.Left
-			textLabel4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			textLabel4.BackgroundTransparency = 1
-			textLabel4.Position = UDim2.fromScale(0.0181, 0)
-			textLabel4.Size = UDim2.fromOffset(1, 32)
-			textLabel4.Parent = toggle1
-
-			local frame3 = Instance.new("Frame")
-			frame3.Name = "frame3"
-			frame3.BackgroundColor3 = config.ThemeColor
-			frame3.Position = UDim2.fromScale(0.943, 0.219)
-			frame3.Size = UDim2.fromOffset(18, 18)
-
-			local imag4e = Instance.new("ImageLabel")
-			imag4e.Name = "imag4e"
-			imag4e.BackgroundColor3 = config.ThemeColor
-			imag4e.BackgroundTransparency = 1
-			imag4e.Image = "rbxassetid://11570018242"
-			imag4e.Position = UDim2.fromScale(0.943, 0.219)
-			imag4e.Size = UDim2.fromOffset(18, 18)
-
-			local uICorner10 = Instance.new("UICorner")
-			uICorner10.Name = "uICorner10"
-			uICorner10.CornerRadius = UDim.new(0, 3)
-			uICorner10.Parent = frame3
-
-			local uIStroke1 = Instance.new("UIStroke")
-			uIStroke1.Name = "uIStroke1"
-			uIStroke1.Color = Color3.fromRGB(76, 76, 76)
-			uIStroke1.Parent = frame3
-
-			frame3.Parent = toggle1
-			imag4e.Parent = toggle1
-
-			toggle1.Parent = holder
-
-			local tog = false
-
-			hoverClickSFXs(toggle1)
-
-			toggle1.MouseEnter:Connect(function()
-				game:GetService('TweenService'):Create(toggle1, TweenInfo.new(0.3), {BackgroundColor3 = PitchHoverColor}):Play()
-			end)
-
-			toggle1.MouseLeave:Connect(function()
-				game:GetService('TweenService'):Create(toggle1, TweenInfo.new(0.3), {BackgroundColor3 = PitchColor}):Play()
-			end)
-
-			toggle1.MouseButton1Click:Connect(function()
-				tog = not tog
-				if tog then
-					game:GetService('TweenService'):Create(frame3, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(23, 143, 75)}):Play()
-					game:GetService('TweenService'):Create(uIStroke1, TweenInfo.new(0.1), {Color = Color3.fromRGB(32, 202, 106)}):Play()
-				else
-					game:GetService('TweenService'):Create(frame3, TweenInfo.new(0.1), {BackgroundColor3 = config.ThemeColor}):Play()
-					game:GetService('TweenService'):Create(uIStroke1, TweenInfo.new(0.1), {Color = Color3.fromRGB(76, 76, 76)}):Play()
-				end
-			end)
-
-			task.spawn(function()
-				while true do
-					if tog == true then
-						callback()
-						task.wait(interval)
-					else
-						task.wait()
-					end
 				end
 			end)
 		end
