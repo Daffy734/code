@@ -1,7 +1,7 @@
 local ui = loadstring(game:HttpGet("https://raw.githubusercontent.com/Daffy734/code/refs/heads/main/yep"))()
 
 local win = ui:Create({
-    Name = "Jump Showdown (Daffy)",
+    Name = "Jump Showdown",
     ThemeColor = Color3.fromRGB(42, 195, 209),
     StartupSound = "rbxassetid://6958727243",
     ThemeFont = Enum.Font.GothamBold,
