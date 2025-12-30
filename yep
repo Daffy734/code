@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("daffys ui: ver 1.14.2")
+print("daffys ui: ver 1.14.3")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -625,6 +625,7 @@ function Library:Create(config)
 				desclabl.Size = UDim2.fromOffset(1, 32)
 				desclabl.Parent = button
 				
+				textLabel5.Size = UDim2.fromScale(0.5, 0.7)
 				button.Size = UDim2.fromOffset(441, 42)
 			end
 
@@ -1051,6 +1052,7 @@ function Library:Create(config)
 				desclabl.Size = UDim2.fromOffset(1, 32)
 				desclabl.Parent = toggle1
 
+				textLabel4.Size = UDim2.fromScale(0.5, 0.7)
 				toggle1.Size = UDim2.fromOffset(441, 42)
 			end
 
