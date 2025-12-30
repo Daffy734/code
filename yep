@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("daffys ui: ver 1.14.0")
+print("daffys ui: ver 1.14.1")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -49,7 +49,12 @@ function Library:Create(config)
 	main.BackgroundColor3 = config.ThemeColor
 	main.BackgroundTransparency = 0.1
 	main.Position = UDim2.fromScale(0.244, 0.292)
-	main.Size = UDim2.fromOffset(488, 299)
+	main.Size = UDim2.fromOffset(488, 340)
+	
+	local bgGrad = Instance.new("UIGradient")
+	bgGrad.Rotation = 90
+	bgGrad.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(156, 156, 156))
+	bgGrad.Parent = main
 
 	local outline = Instance.new("UIStroke")
 	outline.Color = lighterColor
@@ -334,6 +339,13 @@ function Library:Create(config)
 		end
 		return currentTab
 	end
+	
+	local function grad(obj, darker)
+		local bgGrad = Instance.new("UIGradient")
+		bgGrad.Rotation = 90
+		bgGrad.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), darker or Color3.fromRGB(225, 225, 225))
+		bgGrad.Parent = obj
+	end
 
 	local function hoverClickSFXs(button)
 		button.MouseButton1Click:Connect(function()
@@ -437,7 +449,7 @@ function Library:Create(config)
 		holda.BackgroundTransparency = 1
 		holda.ClipsDescendants = true
 		holda.Position = UDim2.fromScale(0.0342, 0.31)
-		holda.Size = UDim2.fromOffset(454, 183)
+		holda.Size = UDim2.fromOffset(454, 220)
 		
 
 		local container = Instance.new("Frame")
@@ -467,7 +479,7 @@ function Library:Create(config)
 		holder.BackgroundTransparency = 1
 		holder.BorderColor3 = Color3.fromRGB(33, 33, 33)
 		holder.Position = UDim2.fromScale(0.0022, 0.00404)
-		holder.Size = UDim2.fromOffset(452, 182)
+		holder.Size = UDim2.fromOffset(452, 215)
 
 		local uIPadding1 = Instance.new("UIPadding")
 		uIPadding1.Name = "uIPadding1"
@@ -524,6 +536,8 @@ function Library:Create(config)
 			label.BackgroundColor3 = PitchColor
 			label.Size = UDim2.fromOffset(441, 32)
 			label.Parent = holder
+			
+			grad(label)
 
 			local uICorner3 = Instance.new("UICorner")
 			uICorner3.Name = "uICorner3"
@@ -575,6 +589,7 @@ function Library:Create(config)
 			button.AutoButtonColor = false
 
 			bubbleClick(button)
+			grad(button)
 
 			local uICorner12 = Instance.new("UICorner")
 			uICorner12.Name = "uICorner12"
@@ -653,6 +668,7 @@ function Library:Create(config)
 			button.AutoButtonColor = false
 
 			bubbleClick(button)
+			grad(button)
 
 			local uICorner12 = Instance.new("UICorner")
 			uICorner12.Name = "uICorner12"
@@ -783,6 +799,8 @@ function Library:Create(config)
 			button.BackgroundColor3 = PitchColor
 			button.Position = UDim2.fromScale(0, 0.135)
 			button.Size = UDim2.fromOffset(441, 32)
+			
+			grad(button)
 
 			local uICorner12 = Instance.new("UICorner")
 			uICorner12.Name = "uICorner12"
@@ -850,9 +868,6 @@ function Library:Create(config)
 			local initialValue = math.clamp(default or min, min, max)
 			initialValue = roundToIncrement(initialValue)
 			initialValue = math.clamp(initialValue, min, max)
-
-
-
 			local TweenService = game:GetService("TweenService")
 			local UIS = game:GetService("UserInputService")
 			local RunService = game:GetService("RunService")
@@ -865,6 +880,9 @@ function Library:Create(config)
 			slider.AutoButtonColor = false
 			slider.Parent = holder
 			Instance.new("UICorner", slider).CornerRadius = UDim.new(0, 6)
+			
+
+			grad(slider)
 
 			-- Title
 			local title = Instance.new("TextLabel")
@@ -997,6 +1015,7 @@ function Library:Create(config)
 			toggle1.AutoButtonColor = false
 
 			bubbleClick(toggle1)
+			grad(toggle1)
 
 			local uICorner9 = Instance.new("UICorner")
 			uICorner9.Name = "uICorner9"
@@ -1089,6 +1108,8 @@ function Library:Create(config)
 			textbox.Name = "textbox"
 			textbox.BackgroundColor3 = PitchColor
 			textbox.Size = UDim2.fromOffset(441, 32)
+			
+			grad(textbox)
 
 			local uICorner13 = Instance.new("UICorner")
 			uICorner13.Name = "uICorner13"
