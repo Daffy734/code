@@ -825,7 +825,6 @@ function Library:Create(config)
 
 			local DECIMALS = getDecimals(increments)
 
-			-- Ensure default snaps to the nearest increment immediately
 			local initialValue = math.clamp(default or min, min, max)
 			initialValue = roundToIncrement(initialValue)
 			initialValue = math.clamp(initialValue, min, max)
@@ -836,7 +835,6 @@ function Library:Create(config)
 			local UIS = game:GetService("UserInputService")
 			local RunService = game:GetService("RunService")
 
-			-- Slider button (Container)
 			local slider = Instance.new("TextButton")
 			slider.Name = "Slider"
 			slider.BackgroundColor3 = PitchColor
@@ -858,7 +856,6 @@ function Library:Create(config)
 			title.Size = UDim2.fromScale(0.5, 1)
 			title.Parent = slider
 
-			-- Bar (Background)
 			local bar = Instance.new("Frame")
 			bar.BackgroundColor3 = darkerColor
 			bar.Position = UDim2.fromScale(0.75, 0.5)
@@ -867,16 +864,14 @@ function Library:Create(config)
 			bar.Parent = slider
 			Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 3)
 
-			-- Fill (Progress)
 			local fill = Instance.new("Frame")
 			fill.BackgroundColor3 = config.ThemeColor
-			-- Calculate initial visual width based on snapped default
+			
 			local initialPercent = (initialValue - min) / (max - min)
 			fill.Size = UDim2.fromScale(initialPercent, 1)
 			fill.Parent = bar
 			Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 3)
 
-			-- Value Label
 			local valueLabel = Instance.new("TextBox")
 			valueLabel.Font = config.ThemeFont
 			valueLabel.TextSize = 13
@@ -933,7 +928,6 @@ function Library:Create(config)
 			end
 
 
-			-- Input Handling
 			slider.InputBegan:Connect(function(input)
 				if valueLabel:IsFocused() then return end
 				
@@ -950,7 +944,6 @@ function Library:Create(config)
 			RunService.RenderStepped:Connect(function()
 				if dragging then
 					local mousePos = UIS:GetMouseLocation()
-					-- Adjusting for GUI inset (top bar) if necessary
 					setValueFromX(mousePos.X)
 				end
 			end)
