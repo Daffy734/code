@@ -1102,8 +1102,12 @@ function Library:Create(config)
 			end)
 		end
 
-		function ElementHandler:Textbox(text, callback)
+		function ElementHandler:Textbox(text, desc, callback)
 			text = text or "Textbox"
+			if desc ~= string and not callback then
+				callback = desc
+				desc = nil
+			end
 			callback = callback or function() end
 
 			local textbox = Instance.new("Frame")
@@ -1131,6 +1135,25 @@ function Library:Create(config)
 			textLabel6.Position = UDim2.fromScale(0.0181, 0)
 			textLabel6.Size = UDim2.fromScale(0.5, 1)
 			textLabel6.Parent = textbox
+			
+			if desc then
+				local desclabl = Instance.new("TextLabel")
+				desclabl.Name = "desclabl"
+				desclabl.Font = config.ThemeFont
+				desclabl.Text = desc
+				desclabl.TextColor3 = Color3.fromRGB(203, 203, 203)
+				desclabl.TextSize = 10
+				desclabl.TextStrokeColor3 = Color3.fromRGB(195, 195, 195)
+				desclabl.TextXAlignment = Enum.TextXAlignment.Left
+				desclabl.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				desclabl.BackgroundTransparency = 1
+				desclabl.Position = UDim2.fromScale(0.0181, 0.38)
+				desclabl.Size = UDim2.fromOffset(1, 32)
+				desclabl.Parent = textbox
+
+				textLabel6.Size = UDim2.fromScale(0.5, 0.73)
+				textbox.Size = UDim2.fromOffset(441, 42)
+			end
 
 			local textBox = Instance.new("TextBox")
 			textBox.Name = "textBox"
