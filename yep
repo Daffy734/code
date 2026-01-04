@@ -559,11 +559,15 @@ function Library:Create(config)
 			textLabel.Parent = label
 		end
 		
-		function ElementHandler:Banner(id)
+		function ElementHandler:Banner(id, customHeight)
 			local label = Instance.new("ImageLabel")
 			label.Name = "banner"
 			label.BackgroundColor3 = PitchColor
-			label.Size = UDim2.fromOffset(441, 80)
+			if customHeight then
+				label.Size = UDim2.fromOffset(441, customHeight)
+			else
+				label.Size = UDim2.fromOffset(441, 80)
+			end
 			label.Parent = holder
 			label.Image = "rbxassetid://"..id
 			label.ScaleType = Enum.ScaleType.Crop
