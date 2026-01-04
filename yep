@@ -56,7 +56,7 @@ function Library:Create(config)
 	main.BackgroundTransparency = 0.1
 	main.Position = UDim2.fromScale(0.244, 0.292)
 	main.Size = UDim2.fromOffset(488, 340)
-	
+
 	local draggingSFX = Instance.new("Sound")
 	draggingSFX.Name = "draggingSFX"
 	draggingSFX.SoundId = "rbxassetid://5113213873"
@@ -576,7 +576,7 @@ function Library:Create(config)
 			textLabel.Size = UDim2.fromScale(0.5, 1)
 			textLabel.Parent = label
 		end
-		
+
 		function ElementHandler:Banner(id, customHeight)
 			local label = Instance.new("ImageLabel")
 			label.Name = "banner"
@@ -589,13 +589,13 @@ function Library:Create(config)
 			label.Parent = holder
 			label.Image = "rbxassetid://"..id
 			label.ScaleType = Enum.ScaleType.Crop
-			
+
 			local uICorner3 = Instance.new("UICorner")
 			uICorner3.Name = "uICorner3"
 			uICorner3.CornerRadius = UDim.new(0, 6)
 			uICorner3.Parent = label
 		end
-		
+
 		function ElementHandler:Image(assetId, imageWidth, height, desc)
 			height = height or 60
 
@@ -1109,6 +1109,8 @@ function Library:Create(config)
 				desc = nil
 			end
 			callback = callback or function() end
+			
+			local yeah = {}
 
 			toggless[text] = false
 
@@ -1204,6 +1206,21 @@ function Library:Create(config)
 					game:GetService('TweenService'):Create(uIStroke1, TweenInfo.new(0.2), {Color = Color3.fromRGB(76, 76, 76)}):Play()
 				end
 			end)
+			
+			function yeah.Set(bool)
+				tog = bool
+				toggless[text] = tog
+				callback(tog)
+				if tog then
+					game:GetService('TweenService'):Create(frame3, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(23, 143, 75)}):Play()
+					game:GetService('TweenService'):Create(uIStroke1, TweenInfo.new(0.1), {Color = Color3.fromRGB(32, 202, 106)}):Play()
+				else
+					game:GetService('TweenService'):Create(frame3, TweenInfo.new(0.2), {BackgroundColor3 = config.ThemeColor}):Play()
+					game:GetService('TweenService'):Create(uIStroke1, TweenInfo.new(0.2), {Color = Color3.fromRGB(76, 76, 76)}):Play()
+				end
+			end
+			
+			return yeah
 		end
 
 		function ElementHandler:Textbox(text, desc, callback)
