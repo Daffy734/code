@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("daffys ui: ver 1.15.1")
+print("daffys ui: ver 1.15.2")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -43,6 +43,8 @@ function Library:Create(config)
 	local PitchHoverColor = Color3.new(config.ThemeColor.R / 2.5, config.ThemeColor.G / 2.5, config.ThemeColor.B / 2.5)
 
 	local toggless = {}
+	local dragTween
+	local DRAG_SMOOTHNESS = 0.12 -- lower = smoother, higher = snappier
 
 	local main = Instance.new("Frame")
 	main.Name = "main"
@@ -54,6 +56,14 @@ function Library:Create(config)
 	main.BackgroundTransparency = 0.1
 	main.Position = UDim2.fromScale(0.244, 0.292)
 	main.Size = UDim2.fromOffset(488, 340)
+	
+	local draggingSFX = Instance.new("Sound")
+	draggingSFX.Name = "draggingSFX"
+	draggingSFX.SoundId = "rbxassetid://5113213873"
+	draggingSFX.Volume = 0.06
+	draggingSFX.Looped = true
+	draggingSFX.PlaybackSpeed = 0
+	draggingSFX.Parent = main
 
 	local bgGrad = Instance.new("UIGradient")
 	bgGrad.Rotation = 90
@@ -1308,39 +1318,111 @@ function Library:Create(config)
 	local dragInput
 	local dragStart
 	local startPos
+	local dragging = false
 
-	local function update(input)
-		local delta = input.Position - dragStart
-		main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	local lastPos = nil
+	local lastTime = 0
+	local smoothedPlayback = 1
+
+	local function startDrag(input)
+		dragging = true
+		dragStart = input.Position
+		startPos = main.Position
+
+		lastPos = nil
+		lastTime = os.clock()
+		smoothedPlayback = 1
+
+		draggingSFX.Looped = true
+		draggingSFX.PlaybackSpeed = 1
+		--draggingSFX:Play()
 	end
 
+	local function stopDrag()
+		dragging = false
+		lastPos = nil
+
+		if draggingSFX.IsPlaying then
+			TweenService:Create(draggingSFX, TweenInfo.new(0.2), {PlaybackSpeed = 0}):Play()
+		end
+	end
+
+	local function update(input)
+		local now = os.clock()
+		local dt = now - lastTime
+		lastTime = now
+
+		if not lastPos or dt <= 0 then
+			lastPos = input.Position
+			return
+		end
+
+		-- movement since last frame
+		local delta = input.Position - lastPos
+		lastPos = input.Position
+
+		-- === SFX SPEED (velocity based) ===
+		local speed = delta.Magnitude / dt
+		local targetPlayback = math.clamp(speed / 800, 0, 2)
+
+		smoothedPlayback += (targetPlayback - smoothedPlayback) * 0.25
+		draggingSFX.PlaybackSpeed = smoothedPlayback
+
+		-- === UI POSITION ===
+		local totalDelta = input.Position - dragStart
+
+		local targetPos = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + totalDelta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + totalDelta.Y
+		)
+
+		if dragTween then
+			dragTween:Cancel()
+		end
+
+		dragTween = TweenService:Create(
+			main,
+			TweenInfo.new(
+				DRAG_SMOOTHNESS,
+				Enum.EasingStyle.Quad,
+				Enum.EasingDirection.Out
+			),
+			{ Position = targetPos }
+		)
+
+		dragTween:Play()
+	end
+
+	-- === INPUT HANDLING ===
+
 	main.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging = true
-			dragStart = input.Position
-			startPos = main.Position
+		if input.UserInputType == Enum.UserInputType.MouseButton1
+			or input.UserInputType == Enum.UserInputType.Touch then
+			startDrag(input)
 
 			input.Changed:Connect(function()
 				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
+					stopDrag()
 				end
 			end)
 		end
 	end)
 
 	main.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		if input.UserInputType == Enum.UserInputType.MouseMovement
+			or input.UserInputType == Enum.UserInputType.Touch then
 			dragInput = input
 		end
 	end)
 
 	UserInputService.InputChanged:Connect(function(input)
-		if input == dragInput and dragging then
-			if main.Visible then
-				update(input)
-			end
+		if input == dragInput and dragging and main.Visible then
+			update(input)
 		end
 	end)
+
 
 
 	-- make the first tab visible
@@ -1361,7 +1443,7 @@ function Library:Create(config)
 		sound.SoundId = config.StartupSound
 		sound.Volume = 1.5
 		sound:Play()
-		game.Debris:AddItem(sound, 9)
+		game.Debris:AddItem(sound,4)
 	end)
 
 	if not RunService:IsStudio() then
