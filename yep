@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("daffys ui: ver 1.15.0")
+print("daffys ui: ver 1.15.1")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -46,14 +46,22 @@ function Library:Create(config)
 
 	local main = Instance.new("Frame")
 	main.Name = "main"
-	main.BackgroundColor3 = config.ThemeColor
+	if config.ThemeGradient then
+		main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	else
+		main.BackgroundColor3 = config.ThemeColor
+	end
 	main.BackgroundTransparency = 0.1
 	main.Position = UDim2.fromScale(0.244, 0.292)
 	main.Size = UDim2.fromOffset(488, 340)
 
 	local bgGrad = Instance.new("UIGradient")
 	bgGrad.Rotation = 90
-	bgGrad.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(156, 156, 156))
+	if config.ThemeGradient then
+		bgGrad.Color = ColorSequence.new(config.ThemeColor, config.ThemeGradient)
+	else
+		bgGrad.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(156, 156, 156))
+	end
 	bgGrad.Parent = main
 
 	local outline = Instance.new("UIStroke")
