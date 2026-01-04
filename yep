@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("daffys ui: ver 1.14.5")
+print("daffys ui: ver 1.15.0")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -50,7 +50,7 @@ function Library:Create(config)
 	main.BackgroundTransparency = 0.1
 	main.Position = UDim2.fromScale(0.244, 0.292)
 	main.Size = UDim2.fromOffset(488, 340)
-	
+
 	local bgGrad = Instance.new("UIGradient")
 	bgGrad.Rotation = 90
 	bgGrad.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(156, 156, 156))
@@ -329,7 +329,7 @@ function Library:Create(config)
 		game.Debris:AddItem(sfx, 1)
 		dark_UI:Destroy()
 	end
-	
+
 	local function getCurrentTabInt()
 		local currentTab = 0
 		for i, v in pairs(main:GetChildren()) do
@@ -339,7 +339,7 @@ function Library:Create(config)
 		end
 		return currentTab
 	end
-	
+
 	local function grad(obj, darker)
 		local bgGrad = Instance.new("UIGradient")
 		bgGrad.Rotation = 90
@@ -371,7 +371,7 @@ function Library:Create(config)
 
 		button.MouseButton1Click:Connect(function()
 			local mousePos = UserInputService:GetMouseLocation()
-			
+
 			local relativeX = mousePos.X - button.AbsolutePosition.X
 			local relativeY = (mousePos.Y - 55) - button.AbsolutePosition.Y 
 
@@ -450,16 +450,16 @@ function Library:Create(config)
 		holda.ClipsDescendants = true
 		holda.Position = UDim2.fromScale(0.0342, 0.31)
 		holda.Size = UDim2.fromOffset(454, 220)
-		
+
 
 		local container = Instance.new("Frame")
 		container.Name = "containerr"
 		container.BackgroundColor3 = darkerColor
 		container.Size = UDim2.new(1, 0, 1, 0)
-		
+
 		local currentInt = getCurrentTabInt()
 		holda:SetAttribute("ContainerInt", currentInt)
-		
+
 		container.Position = UDim2.new(currentInt, 0, 0, 0)
 
 		local uICorner2 = Instance.new("UICorner")
@@ -509,9 +509,9 @@ function Library:Create(config)
 			for _,v:Frame in pairs(location:FindFirstChild('dark_UI').main:GetChildren()) do
 				if v.Name == "container" then
 					local cont = v.containerr
-					
+
 					local po = v:GetAttribute("ContainerInt") - currentInt
-					
+
 					TweenService:Create(cont, TweenInfo.new(0.2), {Position = UDim2.new(po, 0, 0, 0)}):Play()
 				end
 			end
@@ -522,7 +522,7 @@ function Library:Create(config)
 					game:GetService('TweenService'):Create(v, TweenInfo.new(0.15), {TextTransparency = 0.5}):Play()
 				end
 			end
-			
+
 			holda.Visible = true
 			holda.ZIndex = 1
 			game:GetService('TweenService'):Create(main1, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
@@ -536,7 +536,7 @@ function Library:Create(config)
 			label.BackgroundColor3 = PitchColor
 			label.Size = UDim2.fromOffset(441, 32)
 			label.Parent = holder
-			
+
 			grad(label)
 
 			local uICorner3 = Instance.new("UICorner")
@@ -558,6 +558,88 @@ function Library:Create(config)
 			textLabel.Size = UDim2.fromScale(0.5, 1)
 			textLabel.Parent = label
 		end
+		
+		function ElementHandler:Banner(id)
+			local label = Instance.new("ImageLabel")
+			label.Name = "banner"
+			label.BackgroundColor3 = PitchColor
+			label.Size = UDim2.fromOffset(441, 80)
+			label.Parent = holder
+			label.Image = "rbxassetid://"..id
+			label.ScaleType = Enum.ScaleType.Crop
+			
+			local uICorner3 = Instance.new("UICorner")
+			uICorner3.Name = "uICorner3"
+			uICorner3.CornerRadius = UDim.new(0, 6)
+			uICorner3.Parent = label
+		end
+		
+		function ElementHandler:Image(assetId, imageWidth, height, desc)
+			height = height or 60
+
+			-- Container
+			local container = Instance.new("Frame")
+			container.Name = "ImageContainer"
+			container.BackgroundColor3 = PitchColor
+			container.Size = UDim2.new(0, 0, 0, height)
+			container.Size += UDim2.fromOffset(441, 0)
+			container.AutomaticSize = desc and Enum.AutomaticSize.Y or Enum.AutomaticSize.None
+			container.Parent = holder
+
+			grad(container)
+
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0, 6)
+			corner.Parent = container
+
+			-- Padding
+			local padding = Instance.new("UIPadding")
+			padding.PaddingTop = UDim.new(0, 6)
+			padding.PaddingBottom = UDim.new(0, 6)
+			padding.PaddingLeft = UDim.new(0, 6)
+			padding.PaddingRight = UDim.new(0, 6)
+			padding.Parent = container
+
+			-- Vertical layout
+			local layout = Instance.new("UIListLayout")
+			layout.FillDirection = Enum.FillDirection.Vertical
+			layout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+			layout.SortOrder = Enum.SortOrder.LayoutOrder
+			layout.Padding = UDim.new(0, 4)
+			layout.Parent = container
+
+			-- Image
+			local img = Instance.new("ImageLabel")
+			img.Name = "Image"
+			img.Image = "rbxassetid://" .. assetId
+			img.BackgroundTransparency = 1
+			img.Size = UDim2.fromOffset(imageWidth, height - 12)
+			img.Parent = container
+
+			local imgCorner = Instance.new("UICorner")
+			imgCorner.CornerRadius = UDim.new(0, 6)
+			imgCorner.Parent = img
+
+			-- Description (optional)
+			if desc then
+				local descLabel = Instance.new("TextLabel")
+				descLabel.Name = "Description"
+				descLabel.Font = config.ThemeFont
+				descLabel.Text = desc
+				descLabel.TextColor3 = Color3.fromRGB(203, 203, 203)
+				descLabel.TextSize = 10
+				descLabel.TextWrapped = true
+				descLabel.TextXAlignment = Enum.TextXAlignment.Left
+				descLabel.TextYAlignment = Enum.TextYAlignment.Top
+				descLabel.BackgroundTransparency = 1
+				descLabel.Size = UDim2.new(1, 0, 0, 0)
+				descLabel.AutomaticSize = Enum.AutomaticSize.Y
+				descLabel.Parent = container
+			end
+
+			return container
+		end
+
 
 		local startTime = tick()
 		local function formatTime(seconds)
@@ -609,7 +691,7 @@ function Library:Create(config)
 			textLabel5.Position = UDim2.fromScale(0.0181, 0)
 			textLabel5.Size = UDim2.fromScale(0.5, 1)
 			textLabel5.Parent = button
-			
+
 			if desc then
 				local desclabl = Instance.new("TextLabel")
 				desclabl.Name = "desclabl"
@@ -624,7 +706,7 @@ function Library:Create(config)
 				desclabl.Position = UDim2.fromScale(0.0181, 0.38)
 				desclabl.Size = UDim2.fromOffset(1, 32)
 				desclabl.Parent = button
-				
+
 				textLabel5.Size = UDim2.fromScale(0.5, 0.73)
 				button.Size = UDim2.fromOffset(441, 42)
 			end
@@ -800,7 +882,7 @@ function Library:Create(config)
 			button.BackgroundColor3 = PitchColor
 			button.Position = UDim2.fromScale(0, 0.135)
 			button.Size = UDim2.fromOffset(441, 32)
-			
+
 			grad(button)
 
 			local uICorner12 = Instance.new("UICorner")
@@ -853,7 +935,7 @@ function Library:Create(config)
 			max = max or 100
 			increments = increments or 1
 			callback = callback or function() end
-			
+
 			local function roundToIncrement(n)
 				return math.round(n / increments) * increments
 			end
@@ -881,7 +963,7 @@ function Library:Create(config)
 			slider.AutoButtonColor = false
 			slider.Parent = holder
 			Instance.new("UICorner", slider).CornerRadius = UDim.new(0, 6)
-			
+
 
 			grad(slider)
 
@@ -907,7 +989,7 @@ function Library:Create(config)
 
 			local fill = Instance.new("Frame")
 			fill.BackgroundColor3 = config.ThemeColor
-			
+
 			local initialPercent = (initialValue - min) / (max - min)
 			fill.Size = UDim2.fromScale(initialPercent, 1)
 			fill.Parent = bar
@@ -945,7 +1027,7 @@ function Library:Create(config)
 					Size = UDim2.fromScale(snappedPercent, 1)
 				}):Play()
 			end
-			
+
 			local function setValueFromNumber(n)
 				if not n then
 					valueLabel.Text = string.format("%." .. DECIMALS .. "f", currentValue)
@@ -971,7 +1053,7 @@ function Library:Create(config)
 
 			slider.InputBegan:Connect(function(input)
 				if valueLabel:IsFocused() then return end
-				
+
 				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 					dragging = true
 					setValueFromX(input.Position.X)
@@ -1036,7 +1118,7 @@ function Library:Create(config)
 			textLabel4.Position = UDim2.fromScale(0.0181, 0)
 			textLabel4.Size = UDim2.fromScale(0.5, 1)
 			textLabel4.Parent = toggle1
-			
+
 			if desc then
 				local desclabl = Instance.new("TextLabel")
 				desclabl.Name = "desclabl"
@@ -1114,7 +1196,7 @@ function Library:Create(config)
 			textbox.Name = "textbox"
 			textbox.BackgroundColor3 = PitchColor
 			textbox.Size = UDim2.fromOffset(441, 32)
-			
+
 			grad(textbox)
 
 			local uICorner13 = Instance.new("UICorner")
@@ -1135,7 +1217,7 @@ function Library:Create(config)
 			textLabel6.Position = UDim2.fromScale(0.0181, 0)
 			textLabel6.Size = UDim2.fromScale(0.5, 1)
 			textLabel6.Parent = textbox
-			
+
 			if desc then
 				local desclabl = Instance.new("TextLabel")
 				desclabl.Name = "desclabl"
