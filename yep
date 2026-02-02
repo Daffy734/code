@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("🎨 Daffy's UI: ver 1.15.2")
+print("🎨 Daffy's UI: ver 1.16.0")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -41,6 +41,134 @@ function Library:Create(config)
 	local brightColor = Color3.new(config.ThemeColor.R * 3, config.ThemeColor.G * 3, config.ThemeColor.B * 3)
 
 	local PitchHoverColor = Color3.new(config.ThemeColor.R / 2.5, config.ThemeColor.G / 2.5, config.ThemeColor.B / 2.5)
+	
+	local everyClipboard = nil
+	if not RunService:IsStudio() then
+		everyClipboard = setclipboard or toclipboard or set_clipboard or (Clipboard and Clipboard.set)
+	end
+	
+	local function toClipboard(txt)
+		if everyClipboard then
+			everyClipboard(tostring(txt))
+		else
+			print("Your exploit doesn't have the ability to use the clipboard")
+		end
+	end
+	
+	local keyWorked = false
+	
+	if not config.Key then
+		keyWorked = true
+	end
+	
+	-- key stuff
+	
+	task.spawn(function()
+		if config.Key then
+			local mainKey = Instance.new("Frame")
+			mainKey.Name = "main"
+			if config.ThemeGradient then
+				mainKey.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			else
+				mainKey.BackgroundColor3 = config.ThemeColor
+			end
+			mainKey.BackgroundTransparency = 0.1
+			mainKey.AnchorPoint = Vector2.new(0.5, 0.5)
+			mainKey.Position = UDim2.new(0.5, 0, 0.5, 0)
+			mainKey.Size = UDim2.fromOffset(350, 170)
+
+			local textboxKey = Instance.new("TextBox")
+			textboxKey.Name = "key"
+			textboxKey.Font = config.ThemeFont
+			textboxKey.Text = ""
+			textboxKey.PlaceholderText = "enter key here.."
+			textboxKey.BackgroundTransparency = 0.7
+			textboxKey.BorderSizePixel = 0
+			textboxKey.TextColor3 = lighterColor
+			textboxKey.TextScaled = true
+			textboxKey.AnchorPoint = Vector2.new(0.5, 0.5)
+			textboxKey.Position = UDim2.new(0.5, 0, 0.6, 0)
+			textboxKey.Size = UDim2.fromOffset(300, 90)
+			textboxKey.Parent = mainKey
+			
+			Instance.new("UICorner", textboxKey)
+
+			local outline = Instance.new("UIStroke")
+			outline.Color = lighterColor
+			outline.Thickness = 2
+			outline.Transparency = 0.5
+			outline.Parent = mainKey
+			local outgrad = Instance.new("UIGradient")
+			outgrad.Rotation = 110
+			outgrad.Color = ColorSequence.new(brightColor, darkerColor)
+			outgrad.Parent = outline
+
+			local title = Instance.new("TextLabel")
+			title.Name = "title"
+			title.Font = config.ThemeFont
+			title.Text = windowName
+			title.TextColor3 = lighterColor
+			title.TextSize = 20
+			title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			title.BackgroundTransparency = 1
+			title.AnchorPoint = Vector2.new(0.5, 0)
+			title.Position = UDim2.new(0.5, 0, 0.06, 0)
+			title.Size = UDim2.fromOffset(83, 28)
+			title.Parent = mainKey
+			
+			local copyLink = Instance.new("TextButton")
+			copyLink.Name = "copy"
+			copyLink.Font = config.ThemeFont
+			copyLink.Text = "Copy Linkverse"
+			copyLink.TextColor3 = lighterColor
+			copyLink.TextSize = 20
+			copyLink.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			copyLink.BackgroundTransparency = 0
+			copyLink.AnchorPoint = Vector2.new(0.5, -1)
+			copyLink.Position = UDim2.new(0.8, 0, -0.2, 0)
+			copyLink.Size = UDim2.fromOffset(100, 28)
+			copyLink.TextScaled = true
+			if config.ThemeGradient then
+				copyLink.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			else
+				copyLink.BackgroundColor3 = config.ThemeColor
+			end
+			copyLink.Parent = mainKey
+			
+			copyLink.MouseButton1Up:Connect(function()
+				toClipboard("https://linkvertise.com/3251796/83SNJ1INhp1X?o=sharing")
+			end)
+			
+			Instance.new("UICorner", copyLink)
+
+			local uICorner = Instance.new("UICorner")
+			uICorner.Name = "uICorner"
+			uICorner.Parent = mainKey
+
+			mainKey.Parent = dark_UI
+			
+			local keyIndex = 1
+
+			textboxKey.FocusLost:Connect(function(enterPressed)
+				if not enterPressed then return end
+
+				local input = textboxKey.Text
+				
+				if table.find(config.Key, input) then
+					keyWorked = true
+					mainKey:Destroy()
+				else
+					textboxKey.Text = "incorrect key"
+				end
+			end)
+
+
+		end
+	end)
+	--
+	
+	
+	repeat task.wait() until keyWorked == true
 
 	local toggless = {}
 	local dragTween
