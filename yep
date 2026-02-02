@@ -131,7 +131,7 @@ function Library:Create(config)
 			copyLink.Text = "Copy Linkvertise"
 			copyLink.TextColor3 = lighterColor
 			copyLink.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			copyLink.BackgroundTransparency = 0
+			copyLink.BackgroundTransparency = 0.3
 			copyLink.AnchorPoint = Vector2.new(0.5, -1)
 			copyLink.Position = UDim2.new(0.8, 0, -0.2, 0)
 			copyLink.Size = UDim2.fromOffset(100, 28)
