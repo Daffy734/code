@@ -130,7 +130,6 @@ function Library:Create(config)
 			copyLink.Font = config.ThemeFont
 			copyLink.Text = "Copy Linkvertise"
 			copyLink.TextColor3 = lighterColor
-			copyLink.TextSize = 20
 			copyLink.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			copyLink.BackgroundTransparency = 0
 			copyLink.AnchorPoint = Vector2.new(0.5, -1)
@@ -143,15 +142,6 @@ function Library:Create(config)
 				copyLink.BackgroundColor3 = config.ThemeColor
 			end
 			copyLink.Parent = mainKey
-			
-			local bgGrad2 = Instance.new("UIGradient")
-			bgGrad2.Rotation = 90
-			if config.ThemeGradient then
-				bgGrad2.Color = ColorSequence.new(config.ThemeColor, config.ThemeGradient)
-			else
-				bgGrad2.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(156, 156, 156))
-			end
-			bgGrad2.Parent = copyLink
 			
 			copyLink.MouseButton1Up:Connect(function()
 				toClipboard("https://linkvertise.com/3251796/83SNJ1INhp1X?o=sharing")
