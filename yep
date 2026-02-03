@@ -128,10 +128,10 @@ function Library:Create(config)
 			local copyLink = Instance.new("TextButton")
 			copyLink.Name = "copy"
 			copyLink.Font = config.ThemeFont
-			copyLink.Text = "Copy Linkvertise"
+			copyLink.Text = ""
 			copyLink.TextColor3 = lighterColor
 			copyLink.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			copyLink.BackgroundTransparency = 0.3
+			copyLink.BackgroundTransparency = 0
 			copyLink.AnchorPoint = Vector2.new(0.5, -1)
 			copyLink.Position = UDim2.new(0.8, 0, -0.2, 0)
 			copyLink.Size = UDim2.fromOffset(100, 28)
@@ -141,7 +141,24 @@ function Library:Create(config)
 			else
 				copyLink.BackgroundColor3 = config.ThemeColor
 			end
+			local copyLinkText = Instance.new("TextLabel")
+			copyLinkText.Font = config.ThemeFont
+			copyLinkText.Text = "Copy Linkvertise"
+			copyLinkText.TextColor3 = lighterColor
+			copyLinkText.TextScaled = true
+			copyLinkText.BackgroundTransparency = 1
+			copyLinkText.Size = UDim2.new(1, 0, 1, 0)
+			copyLinkText.Parent = copyLink
 			copyLink.Parent = mainKey
+			
+			local bgGrad2 = Instance.new("UIGradient")
+			bgGrad2.Rotation = 90
+			if config.ThemeGradient then
+				bgGrad2.Color = ColorSequence.new(config.ThemeColor, config.ThemeGradient)
+			else
+				bgGrad2.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(156, 156, 156))
+			end
+			bgGrad2.Parent = copyLink
 			
 			copyLink.MouseButton1Up:Connect(function()
 				toClipboard("https://linkvertise.com/3251796/83SNJ1INhp1X?o=sharing")
