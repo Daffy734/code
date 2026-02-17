@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("🎨 Daffy's UI: ver 1.16.2")
+print("🎨 Daffy's UI: ver 1.16.3")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -1251,6 +1251,8 @@ function Library:Create(config)
 					dragging = false
 				end
 			end)
+
+            return slider
 		end
 
 
