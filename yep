@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("🎨 Daffy's UI: ver 1.16.3")
+print("🎨 Daffy's UI: ver 1.17.0")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -1252,7 +1252,7 @@ function Library:Create(config)
 				end
 			end)
 
-            return slider
+			return slider
 		end
 
 
@@ -1376,6 +1376,176 @@ function Library:Create(config)
 			end
 
 			return yeah
+		end
+		
+		function ElementHandler:Folder(folderName, folderColor, openByDefault)
+			folderName = folderName or "Folder"
+
+			local opened = openByDefault or false
+
+			-- Main folder container
+			local folder = Instance.new("Frame")
+			folder.Name = "Folder"
+			folder.BackgroundColor3 = PitchColor
+			folder.Size = UDim2.fromOffset(441, 32)
+			folder.BackgroundTransparency = 0.5
+			folder.AutomaticSize = Enum.AutomaticSize.Y
+			folder.Parent = holder
+
+			local folOutline = Instance.new("UIStroke")
+			folOutline.Color = folderColor or lighterColor
+			folOutline.Transparency = 0.4
+			folOutline.Parent = folder
+			
+			grad(folder)
+
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0, 6)
+			corner.Parent = folder
+
+			local layout = Instance.new("UIListLayout")
+			layout.Padding = UDim.new(0, 4)
+			layout.SortOrder = Enum.SortOrder.LayoutOrder
+			layout.Parent = folder
+
+			-- Header button
+			local header = Instance.new("TextButton")
+			header.Name = "Header"
+			header.Size = UDim2.fromOffset(441, 32)
+			header.BackgroundTransparency = 1
+			header.Text = ""
+			header.Parent = folder
+			
+			bubbleClick(header)
+
+			local title = Instance.new("TextLabel")
+			title.BackgroundTransparency = 1
+			title.Size = UDim2.fromScale(0.8, 1)
+			title.Position = UDim2.new(0, 25, 0, 0)
+			title.Font = config.ThemeFont
+			title.Text = " " .. folderName
+			title.TextColor3 = Color3.fromRGB(255, 255, 255)
+			title.TextSize = 13
+			title.TextXAlignment = Enum.TextXAlignment.Left
+			title.Parent = header
+			
+			local folderIcon = Instance.new("ImageLabel")
+			folderIcon.BackgroundTransparency = 1
+			folderIcon.Size = UDim2.new(0, 20, 0.65, 0)
+			folderIcon.AnchorPoint = Vector2.new(0, 0.5)
+			folderIcon.Position = UDim2.new(0, 5, 0.5, 0)
+			folderIcon.Image = "rbxassetid://8756129246"
+			folderIcon.ImageColor3 = folderColor or lighterColor
+			folderIcon.Parent = header
+
+			local arrow = Instance.new("ImageLabel")
+			arrow.BackgroundTransparency = 1
+			arrow.Image = "rbxassetid://2418686949"
+			arrow.Size = UDim2.fromOffset(20, 20)
+			arrow.Position = UDim2.fromScale(0.95, 0.2)
+			arrow.Parent = header
+
+			-- Content holder
+			local content = Instance.new("Frame")
+			content.Name = "Content"
+			content.BackgroundTransparency = 1
+			content.Size = UDim2.new(1, 0, 0, 0)
+			content.Visible = openByDefault or false
+			content.AutomaticSize = Enum.AutomaticSize.Y
+			content.Parent = folder
+
+			local contentLayout = Instance.new("UIListLayout")
+			contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			contentLayout.Padding = UDim.new(0, 4)
+			contentLayout.Parent = content
+			
+			if openByDefault then
+				arrow.Rotation = 90
+			end
+
+			header.MouseButton1Click:Connect(function()
+				opened = not opened
+
+				if opened then
+					content.Visible = true
+					arrow.Rotation = 90
+					folder.BackgroundTransparency = 0.7
+				else
+					content.Visible = false
+					arrow.Rotation = 0
+					folder.BackgroundTransparency = 0
+				end
+			end)
+
+			hoverClickSFXs(header)
+
+			local FolderHandler = {}
+
+			function FolderHandler:Button(...)
+				local oldParent = holder
+				holder = content
+				local result = ElementHandler.Button(self, ...)
+				holder = oldParent
+				return result
+			end
+
+			function FolderHandler:Label(...)
+				local oldParent = holder
+				holder = content
+				local result = ElementHandler.Label(self, ...)
+				holder = oldParent
+				return result
+			end
+			
+			function FolderHandler:Textbox(...)
+				local oldParent = holder
+				holder = content
+				local result = ElementHandler.Textbox(self, ...)
+				holder = oldParent
+				return result
+			end
+			
+			function FolderHandler:Image(...)
+				local oldParent = holder
+				holder = content
+				local result = ElementHandler.Image(self, ...)
+				holder = oldParent
+				return result
+			end
+			
+			function FolderHandler:Banner(...)
+				local oldParent = holder
+				holder = content
+				local result = ElementHandler.Banner(self, ...)
+				holder = oldParent
+				return result
+			end
+
+			function FolderHandler:Slider(...)
+				local oldParent = holder
+				holder = content
+				local result = ElementHandler.Slider(self, ...)
+				holder = oldParent
+				return result
+			end
+
+			function FolderHandler:Dropdown(...)
+				local oldParent = holder
+				holder = content
+				local result = ElementHandler.Dropdown(self, ...)
+				holder = oldParent
+				return result
+			end
+
+			function FolderHandler:Keybind(...)
+				local oldParent = holder
+				holder = content
+				local result = ElementHandler.Keybind(self, ...)
+				holder = oldParent
+				return result
+			end
+
+			return FolderHandler
 		end
 
 		function ElementHandler:Textbox(text, desc, callback)
