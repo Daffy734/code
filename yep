@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("🎨 Daffy's UI: ver 1.17.0")
+print("🎨 Daffy's UI: ver 1.17.1")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -1377,7 +1377,7 @@ function Library:Create(config)
 
 			return yeah
 		end
-		
+
 		function ElementHandler:Folder(folderName, folderColor, openByDefault)
 			folderName = folderName or "Folder"
 
@@ -1396,7 +1396,7 @@ function Library:Create(config)
 			folOutline.Color = folderColor or lighterColor
 			folOutline.Transparency = 0.4
 			folOutline.Parent = folder
-			
+
 			grad(folder)
 
 			local corner = Instance.new("UICorner")
@@ -1415,7 +1415,7 @@ function Library:Create(config)
 			header.BackgroundTransparency = 1
 			header.Text = ""
 			header.Parent = folder
-			
+
 			bubbleClick(header)
 
 			local title = Instance.new("TextLabel")
@@ -1428,7 +1428,7 @@ function Library:Create(config)
 			title.TextSize = 13
 			title.TextXAlignment = Enum.TextXAlignment.Left
 			title.Parent = header
-			
+
 			local folderIcon = Instance.new("ImageLabel")
 			folderIcon.BackgroundTransparency = 1
 			folderIcon.Size = UDim2.new(0, 20, 0.65, 0)
@@ -1458,7 +1458,7 @@ function Library:Create(config)
 			contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
 			contentLayout.Padding = UDim.new(0, 4)
 			contentLayout.Parent = content
-			
+
 			if openByDefault then
 				arrow.Rotation = 90
 			end
@@ -1496,7 +1496,7 @@ function Library:Create(config)
 				holder = oldParent
 				return result
 			end
-			
+
 			function FolderHandler:Textbox(...)
 				local oldParent = holder
 				holder = content
@@ -1504,7 +1504,7 @@ function Library:Create(config)
 				holder = oldParent
 				return result
 			end
-			
+
 			function FolderHandler:Image(...)
 				local oldParent = holder
 				holder = content
@@ -1512,7 +1512,7 @@ function Library:Create(config)
 				holder = oldParent
 				return result
 			end
-			
+
 			function FolderHandler:Banner(...)
 				local oldParent = holder
 				holder = content
@@ -1525,6 +1525,14 @@ function Library:Create(config)
 				local oldParent = holder
 				holder = content
 				local result = ElementHandler.Slider(self, ...)
+				holder = oldParent
+				return result
+			end
+			
+			function FolderHandler:Toggle(...)
+				local oldParent = holder
+				holder = content
+				local result = ElementHandler.Toggle(self, ...)
 				holder = oldParent
 				return result
 			end
