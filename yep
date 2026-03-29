@@ -910,11 +910,16 @@ function Library:Create(config)
 			end)
 		end
 
-		function ElementHandler:Dropdown(text, list, callback)
+		function ElementHandler:Dropdown(text, list, desc, callback)
 			local update = {}
 
 			text = text or "dropdown"
+			if desc ~= string and not callback then
+				callback = desc
+				desc = nil
+			end
 			callback = callback or function() end
+			
 			local currentList = list
 
 			local button = Instance.new("TextButton")
@@ -924,6 +929,25 @@ function Library:Create(config)
 			button.Size = UDim2.fromOffset(441, 32)
 			button.Text = ""
 			button.AutoButtonColor = false
+			
+			if desc then
+				local desclabl = Instance.new("TextLabel")
+				desclabl.Name = "desclabl"
+				desclabl.Font = config.ThemeFont
+				desclabl.Text = desc
+				desclabl.TextColor3 = Color3.fromRGB(203, 203, 203)
+				desclabl.TextSize = 10
+				desclabl.TextStrokeColor3 = Color3.fromRGB(195, 195, 195)
+				desclabl.TextXAlignment = Enum.TextXAlignment.Left
+				desclabl.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				desclabl.BackgroundTransparency = 1
+				desclabl.Position = UDim2.fromScale(0.0181, 0.38)
+				desclabl.Size = UDim2.fromOffset(1, 32)
+				desclabl.Parent = button
+
+				textLabel5.Size = UDim2.fromScale(0.5, 0.73)
+				button.Size = UDim2.fromOffset(441, 42)
+			end
 
 			bubbleClick(button)
 			grad(button)
@@ -1528,7 +1552,7 @@ function Library:Create(config)
 				holder = oldParent
 				return result
 			end
-			
+
 			function FolderHandler:Toggle(...)
 				local oldParent = holder
 				holder = content
