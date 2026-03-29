@@ -1,6 +1,6 @@
 --made by daffy734 you NERD, get out of here
 
-print("🎨 Daffy's UI: ver 1.17.2")
+print("🎨 Daffy's UI: ver 1.17.3")
 
 local location
 if game:GetService("RunService"):IsStudio() then
@@ -929,25 +929,6 @@ function Library:Create(config)
 			button.Size = UDim2.fromOffset(441, 32)
 			button.Text = ""
 			button.AutoButtonColor = false
-			
-			if desc then
-				local desclabl = Instance.new("TextLabel")
-				desclabl.Name = "desclabl"
-				desclabl.Font = config.ThemeFont
-				desclabl.Text = desc
-				desclabl.TextColor3 = Color3.fromRGB(203, 203, 203)
-				desclabl.TextSize = 10
-				desclabl.TextStrokeColor3 = Color3.fromRGB(195, 195, 195)
-				desclabl.TextXAlignment = Enum.TextXAlignment.Left
-				desclabl.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				desclabl.BackgroundTransparency = 1
-				desclabl.Position = UDim2.fromScale(0.0181, 0.38)
-				desclabl.Size = UDim2.fromOffset(1, 32)
-				desclabl.Parent = button
-
-				textLabel5.Size = UDim2.fromScale(0.5, 0.73)
-				button.Size = UDim2.fromOffset(441, 42)
-			end
 
 			bubbleClick(button)
 			grad(button)
@@ -970,6 +951,25 @@ function Library:Create(config)
 			textLabel5.Position = UDim2.fromScale(0.0181, 0)
 			textLabel5.Size = UDim2.fromOffset(1, 32)
 			textLabel5.Parent = button
+			
+			if desc then
+				local desclabl = Instance.new("TextLabel")
+				desclabl.Name = "desclabl"
+				desclabl.Font = config.ThemeFont
+				desclabl.Text = desc
+				desclabl.TextColor3 = Color3.fromRGB(203, 203, 203)
+				desclabl.TextSize = 10
+				desclabl.TextStrokeColor3 = Color3.fromRGB(195, 195, 195)
+				desclabl.TextXAlignment = Enum.TextXAlignment.Left
+				desclabl.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				desclabl.BackgroundTransparency = 1
+				desclabl.Position = UDim2.fromScale(0.0181, 0.38)
+				desclabl.Size = UDim2.fromOffset(1, 32)
+				desclabl.Parent = button
+
+				textLabel5.Size = UDim2.fromScale(0.5, 0.73)
+				button.Size = UDim2.fromOffset(441, 42)
+			end
 
 			local dropdownbutton = Instance.new("TextButton")
 			dropdownbutton.Name = "drop"
